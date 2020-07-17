@@ -71,85 +71,89 @@
 		spi0 = &spi_0;
 	};
 
-	memory {
+	
+	reserved-memory {
 		#address-cells = <2>;
 		#size-cells = <2>;
+		ranges;
 
-		other_ext_mem: other_ext_region@0 {
-			linux,reserve-contiguous-region;
-			linux,reserve-region;
-			linux,remove-completely;
+		other_ext_mem: other_ext_region@85e00000 {
+			compatible = "removed-dma-pool";
+			no-map;
 			reg = <0x0 0x85b00000 0x0 0x0d00000>;
 			label = "other_ext_mem";
 		};
 
-		modem_mem: modem_region@0 {
-			linux,reserve-contiguous-region;
-			linux,reserve-region;
-			linux,remove-completely;
+		modem_mem: modem_region@86c00000 {
+			compatible = "removed-dma-pool";
+			no-map-fixup;
 			reg = <0x0 0x86c00000 0x0 0x05600000>;
 			label = "modem_mem";
 		};
 
-		reloc_mem: reloc_region@0 {
-			linux,reserve-contiguous-region;
-			linux,reserve-region;
-			linux,remove-completely;
+		reloc_mem: reloc_region@8c200000 {
+			compatible = "removed-dma-pool";
+			no-map;
 			reg = <0x0 0x8c200000 0x0 0x1800000>;
 			label = "reloc_mem";
 		};
 
-		venus_mem: venus_region@0 {
-			linux,reserve-contiguous-region;
-			linux,memory-limit = <0x90000000>;
-			reg = <0x0 0x0 0x0 0x0500000>;
-			label = "venus_mem";
+		venus_mem: venus_region {
+			compatible = "shared-dma-pool";
+			reusable;
+			alloc-ranges = <0x0 0x80000000 0x0 0x10000000>;
+			alignment = <0 0x400000>;
+			size = <0 0x800000>;
 		};
 
-		secure_mem: secure_region@0 {
-			linux,reserve-contiguous-region;
-			linux,memory-limit = <0xffffffff>;
-			reg = <0x0 0x0 0x0 0x8100000>;
-			label = "secure_mem";
+		secure_mem: secure_region {
+			compatible = "shared-dma-pool";
+			reusable;
+			alloc-ranges = <0 0x00000000 0 0xffffffff>;
+			alignment = <0 0x400000>;
+			size = <0 0x9800000>;
 		};
 
-		qseecom_mem: qseecom_region@0 {
-			linux,reserve-contiguous-region;
-			linux,memory-limit = <0xffffffff>;
-			reg = <0x0 0x0 0x0 0x1000000>;
-			label = "qseecom_mem";
+		qseecom_mem: qseecom_region {
+			compatible = "shared-dma-pool";
+			reusable;
+			alloc-ranges = <0 0x00000000 0 0xffffffff>;
+			alignment = <0 0x400000>;
+			size = <0 0x1000000>;
 		};
 
-		audio_mem: audio_region@0 {
-			linux,reserve-contiguous-region;
-			linux,memory-limit = <0xffffffff>;
-			reg = <0x0 0x0 0x0 0x314000>;
+		audio_mem: audio_region {
+			compatible = "shared-dma-pool";
+			reusable;
+			alloc-ranges = <0 0x00000000 0 0xffffffff>;
+			alignment = <0 0x1000>;
+			size = <0 0x800000>;
 		};
 
 		cont_splash_mem: splash_region@83000000 {
-			linux,reserve-contiguous-region;
-			linux,reserve-region;
 			reg = <0x0 0x83000000 0x0 0x2800000>;
-			label = "cont_splash_mem";
 		};
 
-		adsp_mem: adsp_region@0 {
-			linux,reserve-contiguous-region;
-			linux,memory-limit = <0xffffffff>;
-			reg = <0x0 0x0 0x0 0x400000>;
-			label = "adsp_mem";
+		adsp_mem: adsp_region {
+			compatible = "shared-dma-pool";
+			reusable;
+			alloc-ranges = <0 0x00000000 0 0xffffffff>;
+			alignment = <0 0x100000>;
+			size = <0 0x800000>;
 		};
 
-		tzapp_mem: tzapp_region@0 {
-			linux,reserve-contiguous-region;
-			linux,reserve-region;
-			linux,remove-completely;
-			reg = <0 0x8DD00000 0 0x1900000>;
-			label = "tzapp_mem";
+		/* global autoconfigured region for contiguous allocations */
+		linux,cma {
+			compatible = "shared-dma-pool";
+			alloc-ranges = <0 0x00000000 0 0xffffffff>;
+			reusable;
+			alignment = <0 0x400000>;
+			size = <0 0x4000000>; /* 64MB */
+			linux,cma-default;
 		};
 	};
-};
 
+};
 #include "../msm8976-ion.dtsi"
 #include "../msm8976-iommu.dtsi"
 #include "../msm8976-iommu-domains.dtsi"
